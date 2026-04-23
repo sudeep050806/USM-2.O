@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <!-- Permissions -->
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+
+    <application
+        android:allowBackup="true"
+        android:icon="@mipmap/ic_launcher"
+        android:label="@string/app_name"
+        android:roundIcon="@mipmap/ic_launcher_round"
+        android:supportsRtl="true"
+        android:theme="@style/Theme.UniversitySportsManagement"
+        tools:targetApi="35">
+
+        <!-- Launcher Activity -->
+        <activity
+            android:name=".auth.SplashActivity"
+            android:exported="true"
+            android:theme="@style/Theme.UniversitySportsManagement.NoActionBar">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+
+        <!-- Auth Activities -->
+        <activity
+            android:name=".auth.LoginActivity"
+            android:exported="true"
+            android:theme="@style/Theme.UniversitySportsManagement.NoActionBar" />
+            
+        <activity
+            android:name=".auth.RoleSelectionActivity"
+            android:exported="true"
+            android:theme="@style/Theme.UniversitySportsManagement.NoActionBar" />
+            
+        <activity
+            android:name=".auth.SignupActivity"
+            android:exported="true"
+            android:theme="@style/Theme.UniversitySportsManagement.NoActionBar" />
+            
+        <activity
+            android:name=".auth.OTPVerificationActivity"
+            android:exported="true"
+            android:theme="@style/Theme.UniversitySportsManagement.NoActionBar" />
+
+        <!-- User Dashboard & Features -->
+        <activity
+            android:name=".dashboard.StudentDashboardActivity"
+            android:exported="true" />
+            
+        <activity
+            android:name=".dashboard.TeacherDashboardActivity"
+            android:exported="true" />
+            
+        <activity
+            android:name=".dashboard.AdminDashboardActivity"
+            android:exported="true" />
+
+        <!-- Grounds -->
+        <activity
+            android:name=".grounds.GroundListActivity"
+            android:exported="true"
+            android:label="@string/grounds" />
+            
+        <activity
+            android:name=".grounds.GroundDetailActivity"
+            android:exported="true"
+            android:label="@string/ground_details" />
+
+        <!-- Bookings -->
+        <activity
+            android:name=".bookings.BookGroundActivity"
+            android:exported="true"
+            android:label="@string/book_ground" />
+            
+        <activity
+            android:name=".bookings.MyBookingsActivity"
+            android:exported="true"
+            android:label="@string/my_bookings" />
+            
+        <activity
+            android:name=".bookings.BookingConfirmationActivity"
+            android:exported="true"
+            android:label="@string/confirmation" />
+
+        <!-- Events -->
+        <activity
+            android:name=".events.EventsListActivity"
+            android:exported="true"
+            android:label="@string/events" />
+            
+        <activity
+            android:name=".events.EventDetailActivity"
+            android:exported="true"
+            android:label="@string/event_details" />
+
+        <!-- Admin Management -->
+        <activity
+            android:name=".admin.ManageGroundsActivity"
+            android:exported="true"
+            android:label="@string/manage_grounds" />
+            
+        <activity
+            android:name=".admin.ManageBookingsActivity"
+            android:exported="true"
+            android:label="@string/manage_bookings" />
+            
+        <activity
+            android:name=".admin.ManageEventsActivity"
+            android:exported="true"
+            android:label="@string/manage_events" />
+            
+        <activity
+            android:name=".admin.AdminReportsActivity"
+            android:exported="true"
+            android:label="@string/reports" />
+
+    </application>
+
+</manifest>

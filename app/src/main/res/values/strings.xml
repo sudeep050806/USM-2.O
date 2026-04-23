@@ -1,0 +1,124 @@
+<resources>
+    <string name="app_name">University Sports</string>
+    <string name="welcome">Welcome to University Sports</string>
+    
+    <!-- Roles -->
+    <string name="role_student">Student</string>
+    <string name="role_teacher">Teacher/Staff</string>
+    <string name="role_admin">Admin</string>
+    
+    <!-- Auth -->
+    <string name="login">Login</string>
+    <string name="signup">Sign Up</string>
+    <string name="email">Email</string>
+    <string name="password">Password</string>
+    <string name="confirm_password">Confirm Password</string>
+    <string name="full_name">Full Name</string>
+    <string name="phone">Phone Number</string>
+    <string name="role">Role</string>
+    <string name="select_role">Select Your Role</string>
+    <string name="otp_verification">OTP Verification</string>
+    <string name="enter_otp">Enter 6-digit OTP sent to your email</string>
+    <string name="verify">Verify</string>
+    <string name="resend_otp">Resend OTP</string>
+    <string name="otp_sent">OTP sent to your email</string>
+    <string name="otp_expires_in">Expires in: %s</string>
+    <string name="attempts_remaining">Attempts: %d/3</string>
+    
+    <!-- Dashboard -->
+    <string name="dashboard">Dashboard</string>
+    <string name="welcome_user">Welcome, %s</string>
+    <string name="my_bookings">My Bookings</string>
+    <string name="available_grounds">Available Grounds</string>
+    <string name="upcoming_events">Upcoming Events</string>
+    <string name="facility_usage">Facility Usage</string>
+    <string name="manage_grounds">Manage Grounds</string>
+    <string name="manage_bookings">Manage Bookings</string>
+    <string name="manage_events">Manage Events</string>
+    <string name="logout">Logout</string>
+    
+    <!-- Grounds -->
+    <string name="grounds">Sports Grounds</string>
+    <string name="ground_details">Ground Details</string>
+    <string name="book_ground">Book Ground</string>
+    <string name="ground_name">Ground Name</string>
+    <string name="location">Location</string>
+    <string name="description">Description</string>
+    <string name="capacity">Capacity</string>
+    <string name="opening_hours">Opening Hours</string>
+    <string name="available">Available</string>
+    <string name="not_available">Not Available</string>
+    <string name="select_date">Select Date</string>
+    <string name="select_time_slot">Select Time Slot</string>
+    <string name="book_now">Book Now</string>
+    <string name="ground_type">Sport Type</string>
+    
+    <!-- Bookings -->
+    <string name="booking_id">Booking ID</string>
+    <string name="booking_date">Date</string>
+    <string name="booking_time">Time</string>
+    <string name="booking_status">Status</string>
+    <string name="cancelled">Cancelled</string>
+    <string name="confirmed">Confirmed</string>
+    <string name="pending">Pending</string>
+    <string name="cancel_booking">Cancel Booking</string>
+    <string name="no_bookings">No bookings yet</string>
+    <string name="booking_confirmed">Booking confirmed!</string>
+    
+    <!-- Events -->
+    <string name="events">Sports Events</string>
+    <string name="event_name">Event Name</string>
+    <string name="event_date">Event Date</string>
+    <string name="event_time">Event Time</string>
+    <string name="event_venue">Venue</string>
+    <string name="organizer">Organizer</string>
+    <string name="register">Register</string>
+    <string name="event_registered">Successfully registered!</string>
+    <string name="max_participants">Max Participants</string>
+    <string name="registered">Registered</string>
+    
+    <!-- Admin -->
+    <string name="admin_dashboard">Admin Dashboard</string>
+    <string name="total_bookings">Total Bookings</string>
+    <string name="active_grounds">Active Grounds</string>
+    <string name="upcoming_events_count">Upcoming Events</string>
+    <string name="occupancy_rate">Occupancy Rate</string>
+    <string name="reports">Reports</string>
+    <string name="add_ground">Add Ground</string>
+    <string name="edit_ground">Edit Ground</string>
+    <string name="delete_ground">Delete Ground</string>
+    <string name="add_event">Add Event</string>
+    <string name="edit_event">Edit Event</string>
+    <string name="delete_event">Delete Event</string>
+    
+    <!-- General -->
+    <string name="save">Save</string>
+    <string name="cancel">Cancel</string>
+    <string name="delete">Delete</string>
+    <string name="edit">Edit</string>
+    <string name="back">Back</string>
+    <string name="submit">Submit</string>
+    <string name="search">Search</string>
+    <string name="no_data">No data available</string>
+    <string name="error_occurred">An error occurred. Please try again.</string>
+    <string name="success">Success</string>
+    <string name="failed">Failed</string>
+    <string name="loading">Loading...</string>
+    <string name="internet_required">Internet connection required</string>
+    
+    <!-- Validation -->
+    <string name="invalid_email">Invalid email address</string>
+    <string name="password_too_short">Password must be at least 6 characters</string>
+    <string name="password_mismatch">Passwords do not match</string>
+    <string name="field_required">This field is required</string>
+    <string name="invalid_phone">Invalid phone number</string>
+    <string name="strong_password">Use 8+ chars with numbers & symbols</string>
+    
+    <!-- OTP Messages -->
+    <string name="otp_sent_success">OTP sent successfully</string>
+    <string name="otp_verified">Email verified successfully</string>
+    <string name="otp_invalid">Invalid OTP</string>
+    <string name="otp_expired">OTP expired. Request new one</string>
+    <string name="max_attempts_exceeded">Max verification attempts exceeded. Try again later</string>
+    <string name="resend_cooldown">Wait %d seconds to resend</string>
+</resources>
