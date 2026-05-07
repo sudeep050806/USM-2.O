@@ -60,6 +60,8 @@
             <li>Detailed ground view (capacity, hours, description)</li>
             <li>Smart time slot booking system</li>
             <li>Real-time availability checking (prevents double booking)</li>
+            <li><strong>Maintenance Management:</strong> Grounds can be marked as "Under Maintenance" with reasons and expected completion dates.</li>
+            <li><strong>Maintenance Updates:</strong> Dedicated notification screen for users to see active maintenance status.</li>
             <li>One-hour time slots from 6 AM to 10 PM</li>
         </ul>
     </div>
@@ -70,6 +72,7 @@
             <li>Select date & view available time slots</li>
             <li>Visual slot status (green=available, red=booked)</li>
             <li>Instant booking confirmation</li>
+            <li><strong>One Booking Per Day:</strong> Users are restricted to a maximum of one booking per day for fair usage.</li>
             <li>Email confirmation sent automatically</li>
             <li>View all personal bookings</li>
             <li>Cancel bookings (cancellation email sent)</li>
@@ -166,6 +169,9 @@
         <tr><td>available_from</td><td>TEXT</td><td>Opening time (HH:MM 24hr)</td></tr>
         <tr><td>available_to</td><td>TEXT</td><td>Closing time (HH:MM 24hr)</td></tr>
         <tr><td>is_active</td><td>INTEGER</td><td>Ground availability status</td></tr>
+        <tr><td>is_under_maintenance</td><td>INTEGER</td><td>1 if ground is undergoing repairs (blocks booking)</td></tr>
+        <tr><td>maintenance_reason</td><td>TEXT</td><td>Reason for maintenance works</td></tr>
+        <tr><td>maintenance_expected_date</td><td>TEXT</td><td>Expected return date</td></tr>
     </table>
 
     <h3>bookings</h3>
