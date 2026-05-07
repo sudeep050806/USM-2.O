@@ -92,6 +92,14 @@ public class AdminDashboardActivity extends AppCompatActivity {
             }
         });
 
+        // Maintenance card → ManageGroundsActivity (which hosts maintenance management)
+        findViewById(R.id.cardMaintenance).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(AdminDashboardActivity.this, ManageGroundsActivity.class));
+            }
+        });
+
         findViewById(R.id.btnLogout).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

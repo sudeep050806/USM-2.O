@@ -17,7 +17,8 @@ import com.example.universitysports.models.Ground;
 import java.util.List;
 
 /**
- * GroundAdapter - RecyclerView adapter for displaying grounds list
+ * GroundAdapter - RecyclerView adapter for displaying grounds list.
+ * Shows maintenance badge when a ground is under maintenance.
  */
 public class GroundAdapter extends RecyclerView.Adapter<GroundAdapter.GroundViewHolder> {
 
@@ -45,13 +46,23 @@ public class GroundAdapter extends RecyclerView.Adapter<GroundAdapter.GroundView
         holder.tvSportType.setText(ground.getSportType());
         holder.tvCapacity.setText("Capacity: " + ground.getCapacity());
         holder.tvGroundDescription.setText(ground.getDescription());
-        
+
         // Format times
         String opening = formatTime(ground.getAvailableFrom());
         String closing = formatTime(ground.getAvailableTo());
         holder.tvTiming.setText("Open: " + opening + " - " + closing);
 
-        // Click to view details
+        // Maintenance badge visibility
+        if (ground.isUnderMaintenance()) {
+            holder.viewMaintenanceBadge.setVisibility(View.VISIBLE);
+            // Dim the card slightly to indicate unavailability
+            holder.itemView.setAlpha(0.75f);
+        } else {
+            holder.viewMaintenanceBadge.setVisibility(View.GONE);
+            holder.itemView.setAlpha(1.0f);
+        }
+
+        // Click to view details (including maintenance info)
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -77,6 +88,7 @@ public class GroundAdapter extends RecyclerView.Adapter<GroundAdapter.GroundView
      */
     public static class GroundViewHolder extends RecyclerView.ViewHolder {
         TextView tvGroundName, tvSportType, tvCapacity, tvGroundDescription, tvTiming;
+        View viewMaintenanceBadge;
 
         public GroundViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -85,6 +97,7 @@ public class GroundAdapter extends RecyclerView.Adapter<GroundAdapter.GroundView
             tvCapacity = itemView.findViewById(R.id.tvCapacity);
             tvGroundDescription = itemView.findViewById(R.id.tvGroundDescription);
             tvTiming = itemView.findViewById(R.id.tvTiming);
+            viewMaintenanceBadge = itemView.findViewById(R.id.tvMaintenanceBadge);
         }
     }
 

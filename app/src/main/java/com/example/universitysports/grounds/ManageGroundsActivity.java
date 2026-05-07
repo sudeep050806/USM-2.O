@@ -2,10 +2,11 @@ package com.example.universitysports.grounds;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
-import android.widget.ProgressBar;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -18,8 +19,8 @@ import com.example.universitysports.models.Ground;
 import com.google.android.material.textfield.TextInputEditText;
 
 /**
- * ManageGroundsActivity - Admin interface for managing grounds
- * Allows adding, editing, and deleting grounds
+ * ManageGroundsActivity - Admin interface for managing grounds.
+ * Allows adding, editing, deleting grounds, and setting maintenance status.
  */
 public class ManageGroundsActivity extends AppCompatActivity {
 
@@ -36,7 +37,7 @@ public class ManageGroundsActivity extends AppCompatActivity {
         initHelpers();
         setupRecyclerView();
         loadGrounds();
-        
+
         // FAB for adding new ground
         findViewById(R.id.fabAddGround).setOnClickListener(new View.OnClickListener() {
             @Override
@@ -61,7 +62,7 @@ public class ManageGroundsActivity extends AppCompatActivity {
     }
 
     private void loadGrounds() {
-        java.util.List<Ground> grounds = dbHelper.getAllGrounds();
+        java.util.List<Ground> grounds = dbHelper.getAllGroundsForAdmin();
         adapter.updateData(grounds);
     }
 
@@ -70,7 +71,7 @@ public class ManageGroundsActivity extends AppCompatActivity {
      */
     private void showAddGroundDialog(final Ground existingGround) {
         android.view.View dialogView = getLayoutInflater().inflate(R.layout.dialog_add_ground, null);
-        
+
         final TextInputEditText etName = dialogView.findViewById(R.id.etName);
         final TextInputEditText etLocation = dialogView.findViewById(R.id.etLocation);
         final TextInputEditText etSport = dialogView.findViewById(R.id.etSportType);
@@ -119,7 +120,7 @@ public class ManageGroundsActivity extends AppCompatActivity {
     private void saveGround(final AlertDialog dialog, final Ground existingGround,
                             String name, String location, String sport,
                             String capacityStr, String desc, String opening, String closing) {
-        
+
         // Validation
         if (name.isEmpty()) {
             Toast.makeText(this, "Name required", Toast.LENGTH_SHORT).show();
@@ -175,6 +176,96 @@ public class ManageGroundsActivity extends AppCompatActivity {
     }
 
     /**
+     * Show maintenance dialog for a ground (set/clear maintenance)
+     */
+    void showMaintenanceDialog(final Ground ground) {
+        android.view.View dialogView = getLayoutInflater().inflate(R.layout.dialog_set_maintenance, null);
+
+        final TextInputEditText etReason = dialogView.findViewById(R.id.etMaintenanceReason);
+        final TextInputEditText etDate = dialogView.findViewById(R.id.etExpectedDate);
+
+        // Pre-fill if already under maintenance
+        if (ground.isUnderMaintenance()) {
+            etReason.setText(ground.getMaintenanceReason());
+            etDate.setText(ground.getMaintenanceExpectedDate());
+        }
+
+        String title = ground.isUnderMaintenance()
+                ? "Update Maintenance: " + ground.getName()
+                : "Set Under Maintenance: " + ground.getName();
+
+        AlertDialog dialog = new AlertDialog.Builder(this)
+                .setTitle(title)
+                .setView(dialogView)
+                .setPositiveButton(ground.isUnderMaintenance() ? "Update" : "Set Maintenance", null)
+                .setNeutralButton(ground.isUnderMaintenance() ? "Clear Maintenance" : null, null)
+                .setNegativeButton("Cancel", null)
+                .create();
+
+        dialog.show();
+
+        // Set maintenance
+        dialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String reason = etReason.getText().toString().trim();
+                String date = etDate.getText().toString().trim();
+
+                if (reason.isEmpty()) {
+                    Toast.makeText(ManageGroundsActivity.this,
+                            "Please provide a maintenance reason", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+                if (date.isEmpty()) {
+                    Toast.makeText(ManageGroundsActivity.this,
+                            "Please provide expected completion date (YYYY-MM-DD)", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+
+                boolean success = dbHelper.setMaintenanceStatus(ground.getId(), true, reason, date);
+                if (success) {
+                    Toast.makeText(ManageGroundsActivity.this,
+                            "✅ " + ground.getName() + " marked as Under Maintenance",
+                            Toast.LENGTH_SHORT).show();
+                    dialog.dismiss();
+                    loadGrounds();
+                } else {
+                    Toast.makeText(ManageGroundsActivity.this,
+                            "Failed to update maintenance status", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+
+        // Clear maintenance (only shown when already under maintenance)
+        if (ground.isUnderMaintenance()) {
+            dialog.getButton(AlertDialog.BUTTON_NEUTRAL).setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    new AlertDialog.Builder(ManageGroundsActivity.this)
+                            .setTitle("Clear Maintenance")
+                            .setMessage("Mark " + ground.getName() + " as available again?")
+                            .setPositiveButton("Yes, Clear", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface d2, int which) {
+                                    boolean success = dbHelper.setMaintenanceStatus(
+                                            ground.getId(), false, "", "");
+                                    if (success) {
+                                        Toast.makeText(ManageGroundsActivity.this,
+                                                "✅ " + ground.getName() + " is now Available",
+                                                Toast.LENGTH_SHORT).show();
+                                        dialog.dismiss();
+                                        loadGrounds();
+                                    }
+                                }
+                            })
+                            .setNegativeButton("No", null)
+                            .show();
+                }
+            });
+        }
+    }
+
+    /**
      * Confirm and delete ground
      */
     void confirmDelete(final Ground ground) {
@@ -185,11 +276,11 @@ public class ManageGroundsActivity extends AppCompatActivity {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         if (dbHelper.deleteGround(ground.getId())) {
-                            Toast.makeText(ManageGroundsActivity.this, 
+                            Toast.makeText(ManageGroundsActivity.this,
                                 "Ground deleted", Toast.LENGTH_SHORT).show();
                             loadGrounds();
                         } else {
-                            Toast.makeText(ManageGroundsActivity.this, 
+                            Toast.makeText(ManageGroundsActivity.this,
                                 "Delete failed", Toast.LENGTH_SHORT).show();
                         }
                     }
@@ -223,10 +314,29 @@ public class ManageGroundsActivity extends AppCompatActivity {
             holder.tvGroundName.setText(ground.getName());
             holder.tvSportType.setText(ground.getSportType());
 
+            // Maintenance badge
+            if (ground.isUnderMaintenance()) {
+                holder.tvMaintenanceBadge.setVisibility(View.VISIBLE);
+                holder.tvMaintenanceBadge.setText("🔧 Under Maintenance");
+                holder.btnMaintenance.setText("Update Maintenance");
+                holder.btnMaintenance.setTextColor(Color.parseColor("#FF9800"));
+            } else {
+                holder.tvMaintenanceBadge.setVisibility(View.GONE);
+                holder.btnMaintenance.setText("Set Maintenance");
+                holder.btnMaintenance.setTextColor(Color.parseColor("#FF5722"));
+            }
+
             holder.btnEdit.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     showAddGroundDialog(ground);
+                }
+            });
+
+            holder.btnMaintenance.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    showMaintenanceDialog(ground);
                 }
             });
 
@@ -248,16 +358,18 @@ public class ManageGroundsActivity extends AppCompatActivity {
             notifyDataSetChanged();
         }
 
-        public static class GroundViewHolder extends RecyclerView.ViewHolder {
-            TextView tvGroundName, tvSportType;
-            Button btnEdit, btnDelete;
+        public class GroundViewHolder extends RecyclerView.ViewHolder {
+            TextView tvGroundName, tvSportType, tvMaintenanceBadge;
+            Button btnEdit, btnDelete, btnMaintenance;
 
             public GroundViewHolder(android.view.View itemView) {
                 super(itemView);
                 tvGroundName = itemView.findViewById(R.id.tvGroundName);
                 tvSportType = itemView.findViewById(R.id.tvSportType);
+                tvMaintenanceBadge = itemView.findViewById(R.id.tvMaintenanceBadge);
                 btnEdit = itemView.findViewById(R.id.btnEdit);
                 btnDelete = itemView.findViewById(R.id.btnDelete);
+                btnMaintenance = itemView.findViewById(R.id.btnMaintenance);
             }
         }
     }

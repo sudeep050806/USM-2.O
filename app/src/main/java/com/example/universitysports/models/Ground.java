@@ -17,6 +17,10 @@ public class Ground implements Parcelable {
     private String availableTo;   // HH:MM format (24hr)
     private boolean isActive;
     private String imageUrl; // Optional for future
+    // Maintenance fields
+    private boolean isUnderMaintenance;
+    private String maintenanceReason;
+    private String maintenanceExpectedDate; // Format: YYYY-MM-DD
 
     public Ground() {}
 
@@ -43,6 +47,9 @@ public class Ground implements Parcelable {
         availableTo = in.readString();
         isActive = in.readByte() != 0;
         imageUrl = in.readString();
+        isUnderMaintenance = in.readByte() != 0;
+        maintenanceReason = in.readString();
+        maintenanceExpectedDate = in.readString();
     }
 
     public static final Creator<Ground> CREATOR = new Creator<Ground>() {
@@ -88,6 +95,15 @@ public class Ground implements Parcelable {
     public String getImageUrl() { return imageUrl; }
     public void setImageUrl(String imageUrl) { this.imageUrl = imageUrl; }
 
+    public boolean isUnderMaintenance() { return isUnderMaintenance; }
+    public void setUnderMaintenance(boolean underMaintenance) { isUnderMaintenance = underMaintenance; }
+
+    public String getMaintenanceReason() { return maintenanceReason; }
+    public void setMaintenanceReason(String maintenanceReason) { this.maintenanceReason = maintenanceReason; }
+
+    public String getMaintenanceExpectedDate() { return maintenanceExpectedDate; }
+    public void setMaintenanceExpectedDate(String maintenanceExpectedDate) { this.maintenanceExpectedDate = maintenanceExpectedDate; }
+
     @Override
     public int describeContents() {
         return 0;
@@ -105,5 +121,8 @@ public class Ground implements Parcelable {
         dest.writeString(availableTo);
         dest.writeByte((byte) (isActive ? 1 : 0));
         dest.writeString(imageUrl);
+        dest.writeByte((byte) (isUnderMaintenance ? 1 : 0));
+        dest.writeString(maintenanceReason);
+        dest.writeString(maintenanceExpectedDate);
     }
 }

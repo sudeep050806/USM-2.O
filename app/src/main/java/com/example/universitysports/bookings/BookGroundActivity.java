@@ -18,6 +18,7 @@ import com.example.universitysports.helpers.DBHelper;
 import com.example.universitysports.helpers.EmailSender;
 import com.example.universitysports.helpers.SessionManager;
 import com.example.universitysports.models.Booking;
+import com.example.universitysports.models.Ground;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -26,20 +27,23 @@ import java.util.List;
 import java.util.Locale;
 
 /**
- * BookGroundActivity - Select date & time slot for booking
+ * BookGroundActivity - Select date & time slot for booking.
+ * Enforces:
+ *   1. Ground must NOT be under maintenance.
+ *   2. User can only make ONE booking per day (One Booking Per Day Rule).
  */
 public class BookGroundActivity extends AppCompatActivity implements TimeSlotAdapter.OnSlotSelectedListener {
 
     private TextView tvSelectedGround, tvSelectedDate;
     private RecyclerView rvTimeSlots;
     private ProgressBar progressBar;
-    
+
     private int groundId;
     private String groundName;
     private String selectedDate;
     private String selectedTimeSlot;
     private TimeSlotAdapter timeSlotAdapter;
-    
+
     private SessionManager sessionManager;
     private DBHelper dbHelper;
     private EmailSender emailSender;
@@ -75,6 +79,16 @@ public class BookGroundActivity extends AppCompatActivity implements TimeSlotAda
         if (groundId == -1) {
             Toast.makeText(this, "Invalid ground", Toast.LENGTH_SHORT).show();
             finish();
+            return;
+        }
+
+        // Double-check: block booking if ground is under maintenance
+        Ground ground = dbHelper.getGroundById(groundId);
+        if (ground != null && ground.isUnderMaintenance()) {
+            Toast.makeText(this,
+                    "🔧 This ground is currently under maintenance and is unavailable for booking.",
+                    Toast.LENGTH_LONG).show();
+            finish();
         }
     }
 
@@ -99,7 +113,7 @@ public class BookGroundActivity extends AppCompatActivity implements TimeSlotAda
                 if (selectedTimeSlot != null) {
                     confirmBooking();
                 } else {
-                    Toast.makeText(BookGroundActivity.this, 
+                    Toast.makeText(BookGroundActivity.this,
                         "Please select a time slot", Toast.LENGTH_SHORT).show();
                 }
             }
@@ -111,7 +125,7 @@ public class BookGroundActivity extends AppCompatActivity implements TimeSlotAda
      */
     private void loadAvailableSlots() {
         List<TimeSlotAdapter.TimeSlot> slots = new ArrayList<>();
-        
+
         for (String slotStart : com.example.universitysports.helpers.AppConfig.TIME_SLOTS) {
             String endTime = getEndTime(slotStart);
             boolean isAvailable = dbHelper.isSlotAvailable(groundId, selectedDate, slotStart + " - " + endTime);
@@ -121,7 +135,7 @@ public class BookGroundActivity extends AppCompatActivity implements TimeSlotAda
                 slotStart
             ));
         }
-        
+
         timeSlotAdapter = new TimeSlotAdapter(this, slots, this);
         rvTimeSlots.setAdapter(timeSlotAdapter);
     }
@@ -133,12 +147,46 @@ public class BookGroundActivity extends AppCompatActivity implements TimeSlotAda
     }
 
     /**
-     * Confirm booking
+     * Confirm booking — enforces:
+     *  1. Maintenance check (failsafe)
+     *  2. One-booking-per-day rule
      */
     private void confirmBooking() {
         progressBar.setVisibility(View.VISIBLE);
         findViewById(R.id.btnConfirmBooking).setEnabled(false);
 
+        // Failsafe: re-check maintenance status
+        Ground ground = dbHelper.getGroundById(groundId);
+        if (ground != null && ground.isUnderMaintenance()) {
+            progressBar.setVisibility(View.GONE);
+            findViewById(R.id.btnConfirmBooking).setEnabled(true);
+            new androidx.appcompat.app.AlertDialog.Builder(this)
+                    .setTitle("Ground Unavailable")
+                    .setMessage("🔧 This ground is currently under maintenance.\n\n" +
+                            "Reason: " + ground.getMaintenanceReason() + "\n" +
+                            "Expected completion: " + ground.getMaintenanceExpectedDate())
+                    .setPositiveButton("OK", null)
+                    .show();
+            return;
+        }
+
+        // ONE BOOKING PER DAY RULE
+        int userId = sessionManager.getUserId();
+        String todayDate = getTodayDate();
+        if (dbHelper.hasUserBookedToday(userId, todayDate)) {
+            progressBar.setVisibility(View.GONE);
+            findViewById(R.id.btnConfirmBooking).setEnabled(true);
+            new androidx.appcompat.app.AlertDialog.Builder(this)
+                    .setTitle("Booking Limit Reached")
+                    .setMessage("📅 You have already booked a ground for today.\n\n" +
+                            "You are allowed only one booking per day. " +
+                            "Please try again tomorrow.")
+                    .setPositiveButton("OK", null)
+                    .show();
+            return;
+        }
+
+        // Proceed with booking
         findViewById(R.id.btnConfirmBooking).postDelayed(new Runnable() {
             @Override
             public void run() {
@@ -155,19 +203,19 @@ public class BookGroundActivity extends AppCompatActivity implements TimeSlotAda
                 if (bookingId > 0) {
                     // Send confirmation email
                     String email = sessionManager.getUser().getEmail();
-                    emailSender.sendBookingConfirmation(email, groundName, 
+                    emailSender.sendBookingConfirmation(email, groundName,
                         selectedDate, booking.getTimeSlot(), String.valueOf(bookingId));
 
                     progressBar.setVisibility(View.GONE);
-                    Toast.makeText(BookGroundActivity.this, 
-                        "Booking confirmed!", Toast.LENGTH_LONG).show();
-                    
+                    Toast.makeText(BookGroundActivity.this,
+                        "✅ Booking confirmed!", Toast.LENGTH_LONG).show();
+
                     setResult(RESULT_OK);
                     finish();
                 } else {
                     progressBar.setVisibility(View.GONE);
                     findViewById(R.id.btnConfirmBooking).setEnabled(true);
-                    Toast.makeText(BookGroundActivity.this, 
+                    Toast.makeText(BookGroundActivity.this,
                         "Booking failed. Try again.", Toast.LENGTH_SHORT).show();
                 }
             }

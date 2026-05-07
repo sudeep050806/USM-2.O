@@ -71,6 +71,11 @@
             android:exported="true"
             android:label="@string/ground_details" />
 
+        <activity
+            android:name=".grounds.MaintenanceNotificationsActivity"
+            android:exported="true"
+            android:label="Maintenance Updates" />
+
         <!-- Bookings -->
         <activity
             android:name=".bookings.BookGroundActivity"

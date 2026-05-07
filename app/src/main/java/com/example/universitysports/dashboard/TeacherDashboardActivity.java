@@ -97,6 +97,14 @@ public class TeacherDashboardActivity extends AppCompatActivity {
             }
         });
 
+        // Maintenance Notifications
+        findViewById(R.id.cardMaintenanceNotifications).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(TeacherDashboardActivity.this, com.example.universitysports.grounds.MaintenanceNotificationsActivity.class));
+            }
+        });
+
         findViewById(R.id.btnLogout).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

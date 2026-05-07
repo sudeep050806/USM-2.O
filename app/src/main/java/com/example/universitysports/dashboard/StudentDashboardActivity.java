@@ -101,6 +101,14 @@ public class StudentDashboardActivity extends AppCompatActivity {
             }
         });
 
+        // Maintenance Notifications
+        findViewById(R.id.cardMaintenanceNotifications).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(StudentDashboardActivity.this, com.example.universitysports.grounds.MaintenanceNotificationsActivity.class));
+            }
+        });
+
         // Logout
         findViewById(R.id.btnLogout).setOnClickListener(new View.OnClickListener() {
             @Override

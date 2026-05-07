@@ -24,7 +24,7 @@ public class DBHelper extends SQLiteOpenHelper {
 
     private static final String TAG = "DBHelper";
     private static final String DATABASE_NAME = "UniversitySports.db";
-    private static final int DATABASE_VERSION = 1;
+    private static final int DATABASE_VERSION = 2;
 
     // Table names
     private static final String TABLE_USERS = "users";
@@ -61,6 +61,10 @@ public class DBHelper extends SQLiteOpenHelper {
     private static final String COL_GROUND_FROM = "available_from";
     private static final String COL_GROUND_TO = "available_to";
     private static final String COL_GROUND_ACTIVE = "is_active";
+    // Maintenance columns
+    private static final String COL_GROUND_MAINTENANCE = "is_under_maintenance";
+    private static final String COL_GROUND_MAINT_REASON = "maintenance_reason";
+    private static final String COL_GROUND_MAINT_DATE = "maintenance_expected_date";
 
     // Bookings columns
     private static final String COL_BOOKING_ID = "id";
@@ -124,7 +128,10 @@ public class DBHelper extends SQLiteOpenHelper {
                 COL_GROUND_CAPACITY + " INTEGER, " +
                 COL_GROUND_FROM + " TEXT, " +
                 COL_GROUND_TO + " TEXT, " +
-                COL_GROUND_ACTIVE + " INTEGER DEFAULT 1" +
+                COL_GROUND_ACTIVE + " INTEGER DEFAULT 1, " +
+                COL_GROUND_MAINTENANCE + " INTEGER DEFAULT 0, " +
+                COL_GROUND_MAINT_REASON + " TEXT DEFAULT '', " +
+                COL_GROUND_MAINT_DATE + " TEXT DEFAULT ''" +
                 ")";
         db.execSQL(createGrounds);
 
@@ -528,6 +535,9 @@ public class DBHelper extends SQLiteOpenHelper {
                 ground.setAvailableFrom(cursor.getString(cursor.getColumnIndexOrThrow(COL_GROUND_FROM)));
                 ground.setAvailableTo(cursor.getString(cursor.getColumnIndexOrThrow(COL_GROUND_TO)));
                 ground.setActive(cursor.getInt(cursor.getColumnIndexOrThrow(COL_GROUND_ACTIVE)) == 1);
+                ground.setUnderMaintenance(cursor.getInt(cursor.getColumnIndexOrThrow(COL_GROUND_MAINTENANCE)) == 1);
+                ground.setMaintenanceReason(cursor.getString(cursor.getColumnIndexOrThrow(COL_GROUND_MAINT_REASON)));
+                ground.setMaintenanceExpectedDate(cursor.getString(cursor.getColumnIndexOrThrow(COL_GROUND_MAINT_DATE)));
                 grounds.add(ground);
             } while (cursor.moveToNext());
             cursor.close();
@@ -555,12 +565,100 @@ public class DBHelper extends SQLiteOpenHelper {
             ground.setAvailableFrom(cursor.getString(cursor.getColumnIndexOrThrow(COL_GROUND_FROM)));
             ground.setAvailableTo(cursor.getString(cursor.getColumnIndexOrThrow(COL_GROUND_TO)));
             ground.setActive(cursor.getInt(cursor.getColumnIndexOrThrow(COL_GROUND_ACTIVE)) == 1);
+            ground.setUnderMaintenance(cursor.getInt(cursor.getColumnIndexOrThrow(COL_GROUND_MAINTENANCE)) == 1);
+            ground.setMaintenanceReason(cursor.getString(cursor.getColumnIndexOrThrow(COL_GROUND_MAINT_REASON)));
+            ground.setMaintenanceExpectedDate(cursor.getString(cursor.getColumnIndexOrThrow(COL_GROUND_MAINT_DATE)));
             cursor.close();
         }
         return ground;
     }
 
     // ==================== BOOKING OPERATIONS ====================
+
+    /**
+     * Check if a user has already booked any ground today (One Booking Per Day rule)
+     */
+    public boolean hasUserBookedToday(int userId, String todayDate) {
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.query(TABLE_BOOKINGS,
+                new String[]{COL_BOOKING_ID},
+                COL_BOOKING_USER_ID + " = ? AND " +
+                COL_BOOKING_DATE + " = ? AND " +
+                COL_BOOKING_STATUS + " != 'Cancelled'",
+                new String[]{String.valueOf(userId), todayDate},
+                null, null, null);
+        boolean hasBooked = cursor.getCount() > 0;
+        cursor.close();
+        return hasBooked;
+    }
+
+    /**
+     * Get ALL grounds for admin (active + under maintenance), excluding deleted (is_active=0)
+     */
+    public List<Ground> getAllGroundsForAdmin() {
+        List<Ground> grounds = new ArrayList<>();
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.query(TABLE_GROUNDS,
+                null,
+                COL_GROUND_ACTIVE + " = 1",
+                null, null, null,
+                COL_GROUND_NAME + " ASC");
+
+        if (cursor != null && cursor.moveToFirst()) {
+            do {
+                Ground ground = new Ground();
+                ground.setId(cursor.getInt(cursor.getColumnIndexOrThrow(COL_GROUND_ID)));
+                ground.setName(cursor.getString(cursor.getColumnIndexOrThrow(COL_GROUND_NAME)));
+                ground.setLocation(cursor.getString(cursor.getColumnIndexOrThrow(COL_GROUND_LOCATION)));
+                ground.setDescription(cursor.getString(cursor.getColumnIndexOrThrow(COL_GROUND_DESC)));
+                ground.setSportType(cursor.getString(cursor.getColumnIndexOrThrow(COL_GROUND_SPORT)));
+                ground.setCapacity(cursor.getInt(cursor.getColumnIndexOrThrow(COL_GROUND_CAPACITY)));
+                ground.setAvailableFrom(cursor.getString(cursor.getColumnIndexOrThrow(COL_GROUND_FROM)));
+                ground.setAvailableTo(cursor.getString(cursor.getColumnIndexOrThrow(COL_GROUND_TO)));
+                ground.setActive(cursor.getInt(cursor.getColumnIndexOrThrow(COL_GROUND_ACTIVE)) == 1);
+                ground.setUnderMaintenance(cursor.getInt(cursor.getColumnIndexOrThrow(COL_GROUND_MAINTENANCE)) == 1);
+                ground.setMaintenanceReason(cursor.getString(cursor.getColumnIndexOrThrow(COL_GROUND_MAINT_REASON)));
+                ground.setMaintenanceExpectedDate(cursor.getString(cursor.getColumnIndexOrThrow(COL_GROUND_MAINT_DATE)));
+                grounds.add(ground);
+            } while (cursor.moveToNext());
+            cursor.close();
+        }
+        return grounds;
+    }
+
+    /**
+     * Get grounds that are currently under maintenance for notifications
+     */
+    public List<Ground> getMaintenanceGrounds() {
+        List<Ground> grounds = new ArrayList<>();
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.query(TABLE_GROUNDS,
+                null,
+                COL_GROUND_ACTIVE + " = 1 AND " + COL_GROUND_MAINTENANCE + " = 1",
+                null, null, null,
+                COL_GROUND_NAME + " ASC");
+
+        if (cursor != null && cursor.moveToFirst()) {
+            do {
+                Ground ground = new Ground();
+                ground.setId(cursor.getInt(cursor.getColumnIndexOrThrow(COL_GROUND_ID)));
+                ground.setName(cursor.getString(cursor.getColumnIndexOrThrow(COL_GROUND_NAME)));
+                ground.setLocation(cursor.getString(cursor.getColumnIndexOrThrow(COL_GROUND_LOCATION)));
+                ground.setDescription(cursor.getString(cursor.getColumnIndexOrThrow(COL_GROUND_DESC)));
+                ground.setSportType(cursor.getString(cursor.getColumnIndexOrThrow(COL_GROUND_SPORT)));
+                ground.setCapacity(cursor.getInt(cursor.getColumnIndexOrThrow(COL_GROUND_CAPACITY)));
+                ground.setAvailableFrom(cursor.getString(cursor.getColumnIndexOrThrow(COL_GROUND_FROM)));
+                ground.setAvailableTo(cursor.getString(cursor.getColumnIndexOrThrow(COL_GROUND_TO)));
+                ground.setActive(true);
+                ground.setUnderMaintenance(true);
+                ground.setMaintenanceReason(cursor.getString(cursor.getColumnIndexOrThrow(COL_GROUND_MAINT_REASON)));
+                ground.setMaintenanceExpectedDate(cursor.getString(cursor.getColumnIndexOrThrow(COL_GROUND_MAINT_DATE)));
+                grounds.add(ground);
+            } while (cursor.moveToNext());
+            cursor.close();
+        }
+        return grounds;
+    }
 
     public long createBooking(Booking booking) {
         SQLiteDatabase db = this.getWritableDatabase();
