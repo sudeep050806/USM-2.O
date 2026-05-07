@@ -2,6 +2,7 @@ package com.example.universitysports.grounds;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -10,6 +11,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.example.universitysports.R;
 import com.example.universitysports.bookings.BookGroundActivity;
 import com.example.universitysports.helpers.DBHelper;
+import com.example.universitysports.models.Ground;
 
 /**
  * GroundDetailActivity - Shows ground details and booking option

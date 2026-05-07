@@ -2,6 +2,7 @@ package com.example.universitysports.dashboard;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -42,7 +43,7 @@ public class TeacherDashboardActivity extends AppCompatActivity {
         tvUserName = findViewById(R.id.tvUserName);
         tvMyBookingsCount = findViewById(R.id.tvMyBookingsCount);
         tvEventsCount = findViewById(R.id.tvEventsCount);
-        findViewById(R.id.toolbar).setTitle("Teacher Dashboard");
+        // Title is already set via setTitle() in onCreate
     }
 
     private void initHelpers() {

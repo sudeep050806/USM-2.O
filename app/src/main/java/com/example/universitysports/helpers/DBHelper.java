@@ -417,36 +417,6 @@ public class DBHelper extends SQLiteOpenHelper {
         return new OTPVerifyResult(true, "OTP verified successfully");
     }
 
-        if (otp.isUsed()) {
-            deleteOTP(email); // Clean up used OTP
-            return new OTPVerifyResult(false, "OTP already used. Please request a new one.");
-        }
-
-        if (otp.isExpired()) {
-            deleteOTP(email); // Clean up expired OTP
-            return new OTPVerifyResult(false, "OTP expired. Please request a new one.");
-        }
-
-        if (otp.isMaxAttemptsExceeded()) {
-            deleteOTP(email); // Clean up locked OTP
-            return new OTPVerifyResult(false, "Max attempts exceeded. Please try again later.");
-        }
-
-        // Verify using secure hash comparison
-        String storedHash = otp.getOtp(); // This now contains "salt:hash"
-        if (!com.example.universitysports.helpers.OTPUtil.verifyOTP(enteredOtp, storedHash)) {
-            // Increment attempts
-            incrementOTPAttempts(email);
-            int remaining = 3 - (otp.getAttempts() + 1);
-            String msg = com.example.universitysports.helpers.OTPUtil.getAttemptsMessage(otp.getAttempts() + 1, 3);
-            return new OTPVerifyResult(false, msg);
-        }
-
-        // Success - mark as used
-        markOTPAsUsed(email);
-        return new OTPVerifyResult(true, "OTP verified successfully");
-    }
-
     /** Increment OTP attempts */
     private void incrementOTPAttempts(String email) {
         SQLiteDatabase db = this.getWritableDatabase();
@@ -811,7 +781,10 @@ public class DBHelper extends SQLiteOpenHelper {
     public int getTotalBookings() {
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor cursor = db.rawQuery("SELECT COUNT(*) FROM " + TABLE_BOOKINGS, null);
-        int count = cursor.getCount() > 0 ? cursor.getInt(0) : 0;
+        int count = 0;
+        if (cursor.moveToFirst()) {
+            count = cursor.getInt(0);
+        }
         cursor.close();
         return count;
     }
@@ -821,7 +794,10 @@ public class DBHelper extends SQLiteOpenHelper {
         Cursor cursor = db.rawQuery(
                 "SELECT COUNT(*) FROM " + TABLE_GROUNDS + " WHERE " + COL_GROUND_ACTIVE + " = 1",
                 null);
-        int count = cursor.getCount() > 0 ? cursor.getInt(0) : 0;
+        int count = 0;
+        if (cursor.moveToFirst()) {
+            count = cursor.getInt(0);
+        }
         cursor.close();
         return count;
     }
@@ -831,7 +807,10 @@ public class DBHelper extends SQLiteOpenHelper {
         Cursor cursor = db.rawQuery(
                 "SELECT COUNT(*) FROM " + TABLE_EVENTS + " WHERE " + COL_EVENT_ACTIVE + " = 1",
                 null);
-        int count = cursor.getCount() > 0 ? cursor.getInt(0) : 0;
+        int count = 0;
+        if (cursor.moveToFirst()) {
+            count = cursor.getInt(0);
+        }
         cursor.close();
         return count;
     }
@@ -842,7 +821,10 @@ public class DBHelper extends SQLiteOpenHelper {
                 "SELECT COUNT(*) FROM " + TABLE_BOOKINGS +
                         " WHERE " + COL_BOOKING_GROUND_ID + " = ?",
                 new String[]{String.valueOf(groundId)});
-        int count = cursor.getCount() > 0 ? cursor.getInt(0) : 0;
+        int count = 0;
+        if (cursor.moveToFirst()) {
+            count = cursor.getInt(0);
+        }
         cursor.close();
         return count;
     }

@@ -6,6 +6,7 @@ import android.util.Log;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
+import java.util.Locale;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -59,7 +60,11 @@ public class OTPUtil {
 
         String salt = parts[0];
         String expectedHash = parts[1];
-        String computedHash = hashOTP(enteredOtp, salt);
+        String computedFull = hashOTP(enteredOtp, salt);
+        if (computedFull == null || !computedFull.contains(":")) {
+            return false;
+        }
+        String computedHash = computedFull.split(":")[1];
 
         return expectedHash.equals(computedHash);
     }

@@ -8,8 +8,13 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.universitysports.R;
+import com.example.universitysports.adapters.GroundAdapter;
 import com.example.universitysports.bookings.BookGroundActivity;
 import com.example.universitysports.helpers.DBHelper;
+import com.example.universitysports.models.Ground;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * GroundListActivity - Display all available sports grounds
@@ -45,13 +50,13 @@ public class GroundListActivity extends AppCompatActivity {
     }
 
     private void setupRecyclerView() {
-        groundAdapter = new GroundAdapter(this, new java.util.ArrayList<>());
+        groundAdapter = new GroundAdapter(this, new ArrayList<>());
         rvGrounds.setLayoutManager(new androidx.recyclerview.widget.LinearLayoutManager(this));
         rvGrounds.setAdapter(groundAdapter);
     }
 
     private void loadGrounds() {
-        java.util.List<Ground> grounds = dbHelper.getAllGrounds();
+        List<Ground> grounds = dbHelper.getAllGrounds();
         if (grounds.isEmpty()) {
             Toast.makeText(this, "No grounds available", Toast.LENGTH_SHORT).show();
         }

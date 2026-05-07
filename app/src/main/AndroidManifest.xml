@@ -81,11 +81,6 @@
             android:name=".bookings.MyBookingsActivity"
             android:exported="true"
             android:label="@string/my_bookings" />
-            
-        <activity
-            android:name=".bookings.BookingConfirmationActivity"
-            android:exported="true"
-            android:label="@string/confirmation" />
 
         <!-- Events -->
         <activity
@@ -94,28 +89,28 @@
             android:label="@string/events" />
             
         <activity
-            android:name=".events.EventDetailActivity"
+            android:name=".events.UpcomingEventsActivity"
             android:exported="true"
-            android:label="@string/event_details" />
+            android:label="@string/events" />
 
         <!-- Admin Management -->
         <activity
-            android:name=".admin.ManageGroundsActivity"
+            android:name=".grounds.ManageGroundsActivity"
             android:exported="true"
             android:label="@string/manage_grounds" />
             
         <activity
-            android:name=".admin.ManageBookingsActivity"
+            android:name=".bookings.ManageBookingsActivity"
             android:exported="true"
             android:label="@string/manage_bookings" />
             
         <activity
-            android:name=".admin.ManageEventsActivity"
+            android:name=".events.ManageEventsActivity"
             android:exported="true"
             android:label="@string/manage_events" />
             
         <activity
-            android:name=".admin.AdminReportsActivity"
+            android:name=".dashboard.AdminReportsActivity"
             android:exported="true"
             android:label="@string/reports" />
 
