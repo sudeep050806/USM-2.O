@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Dashboard | USM</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/dashboard.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+<body>
+
+    <!-- Sidebar -->
+    <aside class="sidebar">
+        <div class="sidebar-header">
+            <i class="fas fa-trophy"></i>
+            <h2>SportsPortal</h2>
+        </div>
+        <ul class="sidebar-menu">
+            <li><a href="#" class="active"><i class="fas fa-home"></i> Dashboard</a></li>
+            <li><a href="#"><i class="fas fa-calendar-check"></i> Available Events</a></li>
+            <li><a href="#"><i class="fas fa-running"></i> My Registrations</a></li>
+            <li><a href="#"><i class="fas fa-list-ol"></i> Match Schedules</a></li>
+            <li><a href="#"><i class="fas fa-bullhorn"></i> Announcements</a></li>
+            <li><a href="#"><i class="fas fa-certificate"></i> Certificates</a></li>
+            <li><a href="#"><i class="fas fa-user-edit"></i> Profile Settings</a></li>
+        </ul>
+        <div class="sidebar-footer">
+            <a href="index.html" class="logout-btn"><i class="fas fa-sign-out-alt"></i> Logout</a>
+        </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <header class="topbar">
+            <div class="search-bar">
+                <i class="fas fa-search"></i>
+                <input type="text" placeholder="Search events...">
+            </div>
+            <div class="user-profile">
+                <span>Student S12345</span>
+                <img src="https://ui-avatars.com/api/?name=Student&background=10B981&color=fff" alt="Profile">
+            </div>
+        </header>
+
+        <div class="dashboard-container">
+            <h1 class="page-title">Welcome back, Student!</h1>
+            
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-icon success"><i class="fas fa-calendar-check"></i></div>
+                    <div class="stat-details">
+                        <h3>3</h3>
+                        <p>Active Registrations</p>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon"><i class="fas fa-medal"></i></div>
+                    <div class="stat-details">
+                        <h3>2</h3>
+                        <p>Tournaments Won</p>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon warning"><i class="fas fa-clock"></i></div>
+                    <div class="stat-details">
+                        <h3>1</h3>
+                        <p>Upcoming Match</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card-section">
+                <div class="card-header">
+                    <h2>Upcoming Events (Open for Registration)</h2>
+                    <button class="btn-primary-small">View All</button>
+                </div>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Event Name</th>
+                            <th>Category</th>
+                            <th>Date</th>
+                            <th>Deadline</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Annual Athletics Meet 2026</td>
+                            <td>Track & Field</td>
+                            <td>Nov 15, 2026</td>
+                            <td>Oct 30, 2026</td>
+                            <td><button class="btn-primary-small">Register <i class="fas fa-qrcode"></i></button></td>
+                        </tr>
+                        <tr>
+                            <td>Inter-Dept Badminton</td>
+                            <td>Badminton</td>
+                            <td>Dec 05, 2026</td>
+                            <td>Nov 20, 2026</td>
+                            <td><button class="btn-primary-small">Register <i class="fas fa-qrcode"></i></button></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </main>
+
+</body>
+</html>

@@ -62,6 +62,36 @@ public class GroundAdapter extends RecyclerView.Adapter<GroundAdapter.GroundView
             holder.itemView.setAlpha(1.0f);
         }
 
+        // Set specific sports image
+        String sport = ground.getSportType();
+        if (sport != null) {
+            switch (sport.toLowerCase()) {
+                case "football":
+                    holder.ivGroundImage.setImageResource(R.drawable.img_football);
+                    break;
+                case "basketball":
+                    holder.ivGroundImage.setImageResource(R.drawable.img_basketball);
+                    break;
+                case "cricket":
+                    holder.ivGroundImage.setImageResource(R.drawable.img_cricket);
+                    break;
+                case "tennis":
+                    holder.ivGroundImage.setImageResource(R.drawable.img_tennis);
+                    break;
+                case "volleyball":
+                    holder.ivGroundImage.setImageResource(R.drawable.img_volleyball);
+                    break;
+                case "badminton":
+                    holder.ivGroundImage.setImageResource(R.drawable.img_badminton);
+                    break;
+                default:
+                    holder.ivGroundImage.setImageResource(R.drawable.ic_sports);
+                    break;
+            }
+        } else {
+            holder.ivGroundImage.setImageResource(R.drawable.ic_sports);
+        }
+
         // Click to view details (including maintenance info)
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -89,6 +119,7 @@ public class GroundAdapter extends RecyclerView.Adapter<GroundAdapter.GroundView
     public static class GroundViewHolder extends RecyclerView.ViewHolder {
         TextView tvGroundName, tvSportType, tvCapacity, tvGroundDescription, tvTiming;
         View viewMaintenanceBadge;
+        android.widget.ImageView ivGroundImage;
 
         public GroundViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -98,6 +129,7 @@ public class GroundAdapter extends RecyclerView.Adapter<GroundAdapter.GroundView
             tvGroundDescription = itemView.findViewById(R.id.tvGroundDescription);
             tvTiming = itemView.findViewById(R.id.tvTiming);
             viewMaintenanceBadge = itemView.findViewById(R.id.tvMaintenanceBadge);
+            ivGroundImage = itemView.findViewById(R.id.ivGroundImage);
         }
     }
 

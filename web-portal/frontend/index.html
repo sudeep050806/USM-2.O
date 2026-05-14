@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>University Sports Management | Login</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+<body class="login-body">
+    
+    <!-- Background Elements -->
+    <div class="blob blob-1"></div>
+    <div class="blob blob-2"></div>
+
+    <div class="login-container">
+        <div class="login-header">
+            <div class="logo">
+                <i class="fas fa-trophy"></i>
+            </div>
+            <h1>SportsPortal</h1>
+            <p>University Sports Management System</p>
+        </div>
+
+        <div class="portal-toggle">
+            <button id="btn-student" class="active">Student</button>
+            <button id="btn-admin">Administrator</button>
+        </div>
+
+        <!-- Student Login Form -->
+        <form id="student-form" class="login-form active-form" action="student.html">
+            <div class="input-group">
+                <i class="fas fa-user-graduate icon"></i>
+                <input type="text" placeholder="Student ID (e.g. S12345)" required>
+            </div>
+            <div class="input-group">
+                <i class="fas fa-lock icon"></i>
+                <input type="password" placeholder="Password" required>
+            </div>
+            <div class="form-options">
+                <label><input type="checkbox"> Remember me</label>
+                <a href="#">Forgot Password?</a>
+            </div>
+            <button type="submit" class="btn-primary">Login as Student</button>
+            <p class="register-link">New student? <a href="#">Register here</a></p>
+        </form>
+
+        <!-- Admin Login Form -->
+        <form id="admin-form" class="login-form" action="admin.html">
+            <div class="input-group">
+                <i class="fas fa-user-shield icon"></i>
+                <input type="text" placeholder="Admin Username" required>
+            </div>
+            <div class="input-group">
+                <i class="fas fa-lock icon"></i>
+                <input type="password" placeholder="Password" required>
+            </div>
+            <button type="submit" class="btn-secondary">Login to Dashboard</button>
+        </form>
+    </div>
+
+    <script src="js/login.js"></script>
+</body>
+</html>
